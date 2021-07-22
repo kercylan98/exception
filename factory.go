@@ -9,6 +9,8 @@ import (
 type Factory interface {
 	// Hit 命中例外情况，产生并返回一个例外信息
 	Hit() Exception
+	// Equal 比较两个例外是否相同
+	Equal(exception Exception) bool
 }
 
 func newFactory(code int, text string, feedback ...string) Factory {
@@ -17,16 +19,20 @@ func newFactory(code int, text string, feedback ...string) Factory {
 		defaultFeedback = feedback[0]
 	}
 	return &factory{
-		code: code,
-		text: text,
+		code:     code,
+		text:     text,
 		feedback: defaultFeedback,
 	}
 }
 
 type factory struct {
-	code 			int			// 对应例外情况错误码
-	text 			string		// 对应例外情况文本
-	feedback 		string		// 用户反馈信息
+	code     int    // 对应例外情况错误码
+	text     string // 对应例外情况文本
+	feedback string // 用户反馈信息
+}
+
+func (slf *factory) Equal(exception Exception) bool {
+	return slf.code == exception.Code()
 }
 
 func (slf *factory) Hit() Exception {
@@ -49,5 +55,3 @@ func (slf *factory) Hit() Exception {
 	}
 	return exp
 }
-
-

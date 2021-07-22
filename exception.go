@@ -15,24 +15,30 @@ type Exception interface {
 	Supplement(name string, content interface{}) Exception
 	// Feedback 获取可以用于反馈给用户对信息
 	Feedback() string
+	// Equal 与另一个例外比较是否相同
+	Equal(exception Exception) bool
 	error
 }
 
 func newException(code int, text string, feedback string) Exception {
 	return &exception{
-		code: code,
-		err: errors.New(text),
+		code:        code,
+		err:         errors.New(text),
 		supplements: []supplement{},
-		feedback: feedback,
+		feedback:    feedback,
 	}
 }
 
 type exception struct {
-	code 	int 					// 错误代码
-	err 	error					// 原生错误信息
-	stack 	string					// 堆栈信息
-	supplements []supplement		// 异常补充信息
-	feedback string					// 用户反馈信息
+	code        int          // 错误代码
+	err         error        // 原生错误信息
+	stack       string       // 堆栈信息
+	supplements []supplement // 异常补充信息
+	feedback    string       // 用户反馈信息
+}
+
+func (slf *exception) Equal(exception Exception) bool {
+	return slf.code == exception.Code()
 }
 
 // Feedback 获取可以用于反馈给用户对信息
